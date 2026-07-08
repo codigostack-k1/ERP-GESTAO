@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-dark-bg: #09090b;
+  --color-dark-card: #18181b;
+  --color-dark-sidebar: #09090b;
+  --color-dark-border: #27272a;
+  --color-dark-text: #fafafa;
+  --color-dark-text-muted: #a1a1aa;
+  
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-900: #1e3a8a;
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900 transition-colors duration-200 font-sans antialiased;
+  }
+
+  .dark body {
+    @apply bg-dark-bg text-dark-text;
+  }
+
+  /* Unified dark mode support for all elements */
+  .dark {
+    color-scheme: dark;
+
+    /* Theme overrides for automatic dark mode on standard classes */
+    --color-white: var(--color-dark-card);
+    --color-gray-50: var(--color-dark-bg);
+    --color-gray-100: var(--color-dark-border);
+    --color-gray-200: #2a2a2a;
+    --color-gray-900: var(--color-dark-text);
+    --color-gray-800: var(--color-dark-card);
+    --color-gray-700: var(--color-dark-text-muted);
+  }
+
+  /* Focus ring and scrollbar improvements */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-dark-bg;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-200 dark:bg-dark-border rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white border border-gray-100 rounded-2xl shadow-sm transition-all duration-200;
+  }
+  .dark .card {
+    @apply bg-dark-card border-dark-border shadow-none;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500;
+  }
+  .dark .input-field {
+    @apply bg-dark-bg border-dark-border text-dark-text placeholder-dark-text-muted focus:ring-primary-500/10;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/20 transition-all duration-200 hover:bg-primary-700 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .table-container {
+    @apply overflow-hidden border border-gray-100 rounded-2xl;
+  }
+  .dark .table-container {
+    @apply border-dark-border;
+  }
+
+  .table-header {
+    @apply bg-gray-50/50 text-gray-500 font-bold text-[10px] uppercase tracking-wider;
+  }
+  .dark .table-header {
+    @apply bg-white/5 text-dark-text-muted;
+  }
+
+  .table-row {
+    @apply border-b border-gray-50 transition-colors hover:bg-gray-50/50;
+  }
+  .dark .table-row {
+    @apply border-dark-border hover:bg-white/5;
+  }
+}
+
+@layer utilities {
+  @media print {
+    body {
+      background: white !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Ocultar elementos desnecessários na impressão */
+    .no-print {
+      display: none !important;
+    }
+
+    /* Reset de sombras e outros efeitos na impressão */
+    .print-section {
+      box-shadow: none !important;
+      border: none !important;
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 15mm !important; /* Herdar o padding do documento */
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      background-color: white !important;
+    }
+
+    /* Forçar preto nas fontes se necessário, mas o usuário quer "exatamente igual", então vamos manter as cores */
+  }
+}

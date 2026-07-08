@@ -1,0 +1,5 @@
+{
+  "name": "ERP Gestão",
+  "description": "Sistema ERP completo com PDV, Gestão de Estoque, Financeiro e Dashboard. Funciona 100% offline simulando persistência local.",
+  "requestFramePermissions": []
+}
