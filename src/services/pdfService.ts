@@ -42,7 +42,8 @@ export class PDFService {
         try {
           doc.addImage(config.logo, 'PNG', pageMargin, logoY, 40, 20);
           logoY += 25;
-        } catch {
+        } catch (err) {
+          console.warn('Failed to load company logo:', err instanceof Error ? err.message : 'Unknown error');
           doc.text(config.companyName, pageMargin, logoY + 5);
           logoY += 12;
           drawnCompanyInLogo = true;

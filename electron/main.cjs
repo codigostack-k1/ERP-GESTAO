@@ -12,9 +12,10 @@ function createWindow() {
     minWidth: 1024,
     minHeight: 768,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false 
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: true,
+      preload: path.join(__dirname, 'preload.js')
     },
     autoHideMenuBar: true 
   });
@@ -29,7 +30,15 @@ ipcMain.on('save-data-sync', (event, data) => {
     const encryptionAvailable = typeof safeStorage !== 'undefined' && safeStorage.isEncryptionAvailable();
     
     if (encryptionAvailable) {
-      finalData = safeStorage.encryptString(data);
+      try {
+        finalData = safeStorage.encryptString(data);
+        console.log('Data encrypted successfully');
+      } catch (encryptErr) {
+        console.error('Encryption failed, saving unencrypted:', encryptErr);
+        console.warn('⚠️ WARNING: Data will be stored unencrypted due to encryption failure');
+      }
+    } else {
+      console.warn('⚠️ WARNING: Encryption not available - data will be stored unencrypted');
     }
 
     fs.writeFileSync(DATA_FILE, finalData);
@@ -53,8 +62,14 @@ ipcMain.on('load-data-sync', (event) => {
         } catch (decryptErr) {
           console.warn('Decryption failed, might be unencrypted legacy data:', decryptErr);
           // If decryption fails, try to return as string if it was unencrypted
-          event.returnValue = fileData.toString('utf8');
-          return;
+          try {
+            event.returnValue = fileData.toString('utf8');
+            return;
+          } catch (strErr) {
+            console.error('Failed to read as string:', strErr);
+            event.returnValue = null;
+            return;
+          }
         }
       }
       event.returnValue = fileData.toString('utf8');
